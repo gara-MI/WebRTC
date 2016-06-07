@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>Callee page</title>
+    <script src="signalingChannelFactory.js"></script>
+    <script src="webrtc.js"></script>
+    
+</head>
+<body>
+    <h2>Callee page</h2>
+    <textarea id="message"></textarea>
+    <p id="received"></p>
+
+    <form>
+	Select a PeerID:
+		<br>
+		<select id="mySelect" size="4">
+		</select>
+	</form>
+    <button id="send">Send message</button>
+	<br>
+	<div id="downloadFiles">
+	</div>
+	<div id="messages">
+	</div>
+	<video id="video" width="400px" height="300px" />
+</body>
+<script language="javascript" type="text/javascript">
+        var CALLEE_ID = Math.floor(Math.random()*1000000000);
+        console.log("CALLEE_ID: "+CALLEE_ID);
+		var blob = new Blob([]);
+        var mimeCodec = 'video/mp4; codecs="avc1.42E01E, mp4a.40.2"';
+		var mediaSource;
+		var sourceBuffer;
+		var video = document.getElementById("video");
+		window.URL=(window.URL||window.webkitURL);
+		
+		function addDOwnloadableFile(filedata, filename){
+			var div = document.getElementById("downloadFiles");
+			div.innerHTML += "<a href='"+window.URL.createObjectURL(filedata)+"' download='"+filename+"' >" + filename +"</a> <br>";
+		}
+		function playVideo(file){
+			var src = window.URL.createObjectURL(file);
+			video.src=src;
+			video.autoplay=true;
+			video.play();
+		}
+		
+		window.addEventListener("load", function(){
+            var received = document.getElementById('received')
+            init( function(message){
+				console.log(message);
+				console.log(typeof message);
+            });
+            document.getElementById("send").onclick= function(){
+                var message = document.getElementById('message').value;
+                var ele =  document.getElementById("mySelect");
+                if(ele.selectedIndex >= 0){
+	                var channel = channelList[ele[ele.selectedIndex].innerHTML];
+	                if(channel !==undefined){
+	                	channel.send(message);
+	                	//addMessage(message,localpeerId);
+	                }
+	                else{
+	                	alert("the channel to the peer is closed or you didn't select the correct peer");
+	                }
+                }
+                else{
+                	alert("select the peer from the list");
+                }
+            };
+        }, false);
+		
+    </script>
+</html>

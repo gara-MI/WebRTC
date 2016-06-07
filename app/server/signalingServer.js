@@ -9,6 +9,14 @@ wss.on('connection', function connection(ws) {
         var objMessage = JSON.parse(message);
         messageHandler(ws, objMessage);
     });
+    ws.on('close',function close() {
+  		console.log('disconnected peerid:' + ws.id);
+  		objMessage ={};
+  		objMessage.type ="removePeer";
+  		messageHandler(ws,objMessage);
+	});
+
 });
+
 
 console.log("started signaling server on port" + PORT_NUMBER);

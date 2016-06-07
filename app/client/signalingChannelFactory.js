@@ -36,6 +36,17 @@ function SignalingChannel(id){
             case "answer":
                 self.onAnswer(objMessage.answer, objMessage.source);
                 break;
+            case "listOfPeers":
+                self.onListOfPeers(objMessage.listOfPeers, objMessage.source);
+                break;
+            case "addPeer":
+                self.onAddPeer(objMessage.addPeer, objMessage.source);
+                break;
+            case "removePeer":
+                self.onRemovePeer(objMessage.removePeer, objMessage.source);
+                break;
+
+
             default:
                 throw new Error("invalid message type");
         }
@@ -70,6 +81,15 @@ function SignalingChannel(id){
     //default handler, should be overriden 
     this.onOffer = function(offer, source){
         console.log("offer from peer:", source, ':', offer);
+        var peerConnection = createPeerConnection(self,source);
+        peerConnection.setRemoteDescription(new RTCSessionDescription(offer));
+        peerConnection.createAnswer(function(answer){
+            peerConnection.setLocalDescription(answer);
+            console.log('send answer');
+            self.sendAnswer(answer, source);
+        }, function (e){
+            console.error(e);
+        });
     };
 
     //default handler, should be overriden 
@@ -77,10 +97,30 @@ function SignalingChannel(id){
         console.log("answer from peer:", source, ':', answer);
     };
 
+    this.onListOfPeers = function (listOfPeers, source){
+        console.log(listOfPeers);
+        listOfConnectedPeers(listOfPeers);
+    }
+    this.onAddPeer = function(peerid, source){
+       console.log("this.onAddPeer: "+peerid);
+       //listOfConnectedPeers(listOfPeers); 
+       startPeerConnection(peerid);
+    }
+
+    this.onRemovePeer = function(peerid, source){
+       console.log("onRemovePeer: "+peerid);
+       //listOfConnectedPeers(listOfPeers); 
+       //startPeerConnection(peerid);
+    }
+
     //default handler, should be overriden 
     this.onICECandidate = function(ICECandidate, source){
         console.log("ICECandidate from peer:", source, ':', ICECandidate);
     };
+}
+
+window.listOfConnectedPeers = function(list){
+    console.log(list);
 }
 
 window.createSignalingChannel = function(url, id){

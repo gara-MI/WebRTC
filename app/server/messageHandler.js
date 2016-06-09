@@ -52,11 +52,25 @@ function updateListOfPeers(ws){
     }
 
 }
+
 function onInit(ws, id){
     console.log("init from peer:", id);
     ws.id = id;
     
 
+    var keys = Object.keys(connectedPeers);
+    var rand = 0;
+    if(keys.length != 0){
+        rand = Math.floor(Math.random() * (keys.length + 1));
+        rand = (rand != 0)?rand-1:rand;
+        var dest = keys[rand];
+        connectedPeers[dest].send(JSON.stringify({
+                type:'addPeer',
+                addPeer:id,
+                source:dest,
+            }));
+    }
+    /*
     for(var dest in connectedPeers){
 
         if(dest !== undefined){
@@ -68,6 +82,7 @@ function onInit(ws, id){
             }));
         }
     }
+    */
     connectedPeers[id] = ws; 
 }
 

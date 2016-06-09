@@ -8,7 +8,8 @@
     
 </head>
 <body>
-    <h2>Callee page</h2>
+	<h1>WebRTC Peer to Peer connections</h1>
+    <h2>WebRTC Peer to Peer connections</h2>
     <textarea id="message"></textarea>
     <p id="received"></p>
 
@@ -28,6 +29,9 @@
 </body>
 <script language="javascript" type="text/javascript">
         var CALLEE_ID = Math.floor(Math.random()*1000000000);
+        var h2=document.getElementsByTagName("h2")[0]
+        h2.innerHTML =" clientID: "+CALLEE_ID;
+
         console.log("CALLEE_ID: "+CALLEE_ID);
 		var blob = new Blob([]);
         var mimeCodec = 'video/mp4; codecs="avc1.42E01E, mp4a.40.2"';
@@ -57,9 +61,14 @@
                 var message = document.getElementById('message').value;
                 var ele =  document.getElementById("mySelect");
                 if(ele.selectedIndex >= 0){
-	                var channel = channelList[ele[ele.selectedIndex].innerHTML];
+	                let channel = channelList[ele[ele.selectedIndex].innerHTML];
 	                if(channel !==undefined){
-	                	channel.send(message);
+	                	var jsonmessage={};
+	                	jsonmessage.type="message";
+	                	jsonmessage["message"]=message;
+	                	jsonmessage.peerId = CALLEE_ID;
+	                	channel.send(JSON.stringify(jsonmessage));
+	                	//addMessage(objMessage.message,objMessage.peerId);
 	                	//addMessage(message,localpeerId);
 	                }
 	                else{

@@ -61,8 +61,8 @@ function onInit(ws, id){
     var keys = Object.keys(connectedPeers);
     var rand = 0;
     if(keys.length != 0){
-        rand = Math.floor(Math.random() * (keys.length + 1));
-        rand = (rand != 0)?rand-1:rand;
+        rand = Math.floor(Math.random() * (keys.length));
+        //rand = (rand != 0)?rand-1:rand;
         var dest = keys[rand];
         connectedPeers[dest].send(JSON.stringify({
                 type:'addPeer',

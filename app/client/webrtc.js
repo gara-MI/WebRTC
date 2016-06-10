@@ -195,8 +195,9 @@ function peerSignalingChannel(receiveChannel,evt,localpeerId){
             var peers = objMessage.listOfPeers;
             for(let i=0;i<peers.length;++i){
                 if(peers[i] != objMessage.destination && channelList[peers[i]] == undefined){
-                    console.log('connecting to new peer')
-                    startChannelPeerConnection(self, peers[i]);
+                    let peeri = peers[i];
+			console.log('connecting to new peer: '+peeri);
+                    startChannelPeerConnection(self, peeri);
                 }
             }
             //self.onListOfPeers(objMessage.listOfPeers, objMessage.source);
